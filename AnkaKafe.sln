@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnkaKafe.UI", "AnkaKafe.UI\AnkaKafe.UI.csproj", "{ACCF7E01-DEC5-4704-B147-E4325D7A7BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnkaKafe.Data", "AnkaKafe.Data\AnkaKafe.Data.csproj", "{28E4C7E0-9710-4D66-9B1C-C8D9C75AD9CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACCF7E01-DEC5-4704-B147-E4325D7A7BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACCF7E01-DEC5-4704-B147-E4325D7A7BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACCF7E01-DEC5-4704-B147-E4325D7A7BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACCF7E01-DEC5-4704-B147-E4325D7A7BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28E4C7E0-9710-4D66-9B1C-C8D9C75AD9CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28E4C7E0-9710-4D66-9B1C-C8D9C75AD9CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28E4C7E0-9710-4D66-9B1C-C8D9C75AD9CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28E4C7E0-9710-4D66-9B1C-C8D9C75AD9CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFE5DB96-49E6-43FA-86B5-ED6D6A2C2184}
+	EndGlobalSection
+EndGlobal
