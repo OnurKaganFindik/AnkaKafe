@@ -56,20 +56,32 @@ namespace AnkaKafe.UI
         private void btnEkle_Click(object sender, EventArgs e)
         {
             if (cboUrun.SelectedIndex == -1 || nudAdet.Value < 1)
-                return;// seçili ürün yok , metottan çık
+                return; // seçili ürün yok, metottan çık
+
             Urun urun = (Urun)cboUrun.SelectedItem;
 
-            SiparisDetay siparisDetay = new SiparisDetay()
-            {
-                UrunAd = urun.UrunAd,
-                BirimFiyat = urun.BirimFiyat,
-                Adet = (int)nudAdet.Value
-            };
+            SiparisDetay mevcut = _siparis.SiparisDetaylar.FirstOrDefault(x => x.UrunAd == urun.UrunAd);
 
-            // _blSiparisDetaylar içinde _siparis.SiparisDetaylar'ı da içerdiği için
-            // aynı zamanda Form'dan gelen _siparis nesnesinin detaylarına da bu detayı ekleyecektir.
-            // ve datagridview'ı kendindeki verilerin değiştiği konusunda bilgilendirecektir
-            _blSiparisDetaylar.Add(siparisDetay);
+            if (mevcut == null)
+            {
+                SiparisDetay siparisDetay = new SiparisDetay()
+                {
+                    UrunAd = urun.UrunAd,
+                    BirimFiyat = urun.BirimFiyat,
+                    Adet = (int)nudAdet.Value
+                };
+
+                // _blSiparisDetaylar içinde _siparis.SiparisDetaylar'ı da içerdiği için
+                // aynı zamanda Form'dan gelen _siparis nesnesinin detaylarına da bu detayı ekleyecektir.
+                // ve datagridview'ı kendindeki verilerin değiştiği konusunda bilgilendirecektir
+                _blSiparisDetaylar.Add(siparisDetay);
+            }
+            else
+            {
+                mevcut.Adet += (int)nudAdet.Value;
+                _blSiparisDetaylar.ResetBindings(); // binding listte değişiklik olduğunu belirt
+            }
+
             EkleFormSifirla();
         }
 
@@ -90,7 +102,7 @@ namespace AnkaKafe.UI
                 text: "Seçili sipariş detayları silinecektir. Onaylıyor musun?",
                 caption: "Silme Onayı",
                 buttons: MessageBoxButtons.YesNo,
-                icon: MessageBoxIcon.Exclamation, 
+                icon: MessageBoxIcon.Exclamation,
                 defaultButton: MessageBoxDefaultButton.Button2
             );
 
@@ -113,9 +125,9 @@ namespace AnkaKafe.UI
             SiparisKapat(SiparisDurum.Odendi, _siparis.ToplamTutar());
         }
 
-
         private void SiparisKapat(SiparisDurum siparisDurum, decimal odenenTutar)
         {
+            _siparis.OdenenTutar = odenenTutar;
             _siparis.Durum = siparisDurum;
             _siparis.KapanisZamani = DateTime.Now;
             _db.AktifSiparisler.Remove(_siparis);
