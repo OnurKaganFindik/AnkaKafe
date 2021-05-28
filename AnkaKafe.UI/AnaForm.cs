@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,11 +19,27 @@ namespace AnkaKafe.UI
 
         public AnaForm()
         {
-            OrnekUrunleriEkle(); // ileride kaldırılacak
+            VerileriOku();
             InitializeComponent();
+            Icon = Resource.AnkaKafe;
             masalarImageList.Images.Add("bos", Resource.bos);
             masalarImageList.Images.Add("dolu", Resource.dolu);
             MasalariOlustur();
+        }
+
+        private void VerileriOku()
+        {
+            try
+            {
+                string json = File.ReadAllText("Veri.json");
+                db = JsonSerializer.Deserialize<KafeVeri>(json);
+            }
+            catch (Exception)
+            {
+                db = new KafeVeri();
+                OrnekUrunleriEkle();
+              
+            }
         }
 
         private void OrnekUrunleriEkle()
@@ -38,11 +56,15 @@ namespace AnkaKafe.UI
                 lvi = new ListViewItem();
                 lvi.Tag = i; // masa noyu her bir öğenin Tag property'sinde saklayalım
                 lvi.Text = "Masa " + i;
-                lvi.ImageKey = "bos";
+                lvi.ImageKey = MasaDoluMu(i)?"dolu": "bos";
                 lvwMasalar.Items.Add(lvi);
             }
         }
 
+        private bool MasaDoluMu(int masaNo)
+        {
+            return db.AktifSiparisler.Any(x => x.MasaNo == masaNo);
+        }
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem == tsmiUrunler)
@@ -71,12 +93,33 @@ namespace AnkaKafe.UI
 
             //  bu siparişi başka bir formda aç
             SiparisForm siparisForm = new SiparisForm(db, siparis);
-            siparisForm.ShowDialog();
 
+            //Event Oluşturmada 4. Adım: Event'e metot atamak
+            siparisForm.MasaTasindi += SiparisForm_MasaTasindi;
+
+            siparisForm.ShowDialog();
             //Siparis formu kapattıktan sonra sipariş durumunu kontrol et
             if (siparis.Durum!=SiparisDurum.Aktif)
             {
                 lvi.ImageKey = "bos";
+            }
+        }
+
+        private void SiparisForm_MasaTasindi(object sender, MasaTasindiEventArgs e)
+        {
+            foreach (ListViewItem lvi in lvwMasalar.Items)
+            {
+                int masaNo = (int)lvi.Tag;
+                if (masaNo==e.EskiMasaNo)
+                {
+                    lvi.ImageKey = "bos";
+
+
+                }
+                else if (masaNo==e.YeniMasaNo)
+                {
+                    lvi.ImageKey = "dolu";
+                }
             }
         }
 
@@ -93,6 +136,18 @@ namespace AnkaKafe.UI
             }
 
             return null;
+        }
+
+        private void AnaForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            VerileriKaydet();
+        }
+
+        private void VerileriKaydet()
+        {
+            var options = new JsonSerializerOptions() { WriteIndented = true };
+            string json = JsonSerializer.Serialize(db, options);
+            File.WriteAllText("Veri.json", json);
         }
     }
 }
